@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedFind Arifwala — Medicine Delivery</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #00A651;
+  --green2: #007A3D;
+  --green3: #E8F7EE;
+  --dark: #0D1B12;
+  --white: #FFFFFF;
+  --gray: #F5F7F5;
+  --gray2: #E8EDE9;
+  --text: #1A2E1E;
+  --muted: #6B7E70;
+  --red: #E53935;
+  --amber: #F59E0B;
+  --blue: #1877F2;
+  --font: 'Sora', sans-serif;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --shadow: 0 4px 24px rgba(0,166,81,0.10);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,0.12);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:var(--font); background:var(--white); color:var(--text); overflow-x:hidden; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:var(--gray); }
+::-webkit-scrollbar-thumb { background:var(--green); border-radius:4px; }
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:900;
+  background:rgba(255,255,255,0.96);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--gray2);
+  padding:0 5%;
+  display:flex; align-items:center; justify-content:space-between;
+  height:64px;
+}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.nav-logo-icon {
+  width:38px; height:38px; background:var(--green);
+  border-radius:10px; display:flex; align-items:center;
+  justify-content:center; font-size:20px;
+}
+.nav-logo-text { font-size:18px; font-weight:800; color:var(--dark); }
+.nav-logo-text span { color:var(--green); }
+.nav-links { display:flex; align-items:center; gap:28px; list-style:none; }
+.nav-links a { font-size:13px; font-weight:500; color:var(--muted); text-decoration:none; transition:color .2s; }
+.nav-links a:hover { color:var(--green); }
+.nav-cta { display:flex; gap:10px; align-items:center; }
+.btn { padding:9px 20px; border-radius:8px; font-family:var(--font); font-size:13px; font-weight:600; cursor:pointer; border:none; transition:all .2s; text-decoration:none; display:inline-block; }
+.btn-outline { background:transparent; border:1.5px solid var(--green); color:var(--green); }
+.btn-outline:hover { background:var(--green3); }
+.btn-primary { background:var(--green); color:var(--white); }
+.btn-primary:hover { background:var(--green2); transform:translateY(-1px); box-shadow:var(--shadow); }
+.btn-lg { padding:14px 32px; font-size:15px; border-radius:12px; }
+.btn-white { background:var(--white); color:var(--green); }
+.btn-white:hover { background:var(--green3); }
+.whatsapp-btn {
+  background:#25D366; color:var(--white);
+  display:flex; align-items:center; gap:8px;
+}
+.whatsapp-btn:hover { background:#1ebe5d; }
+
+/* ── HERO ── */
+#hero {
+  min-height:100vh; padding:100px 5% 60px;
+  background: linear-gradient(135deg, #0D1B12 0%, #0A2416 40%, #0D1B12 100%);
+  display:grid; grid-template-columns:1fr 1fr;
+  align-items:center; gap:60px; position:relative; overflow:hidden;
+}
+.hero-bg-circles {
+  position:absolute; inset:0; pointer-events:none;
+}
+.hbc { position:absolute; border-radius:50%; filter:blur(80px); }
+.hbc1 { width:500px; height:500px; background:rgba(0,166,81,0.12); top:-100px; right:-100px; animation:pulse 6s ease-in-out infinite; }
+.hbc2 { width:300px; height:300px; background:rgba(0,166,81,0.08); bottom:0; left:-50px; animation:pulse 8s ease-in-out infinite reverse; }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+
+.hero-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(0,166,81,0.15); border:1px solid rgba(0,166,81,0.3);
+  color:#4ADE80; padding:6px 14px; border-radius:20px;
+  font-size:12px; font-weight:600; letter-spacing:0.05em;
+  margin-bottom:20px;
+  animation:fadeUp .6s ease forwards;
+}
+.hero-title {
+  font-size:clamp(2.2rem,4vw,3.8rem); font-weight:800;
+  color:var(--white); line-height:1.1; margin-bottom:16px;
+  animation:fadeUp .6s ease forwards .2s; opacity:0;
+}
+.hero-title span { color:var(--green); }
+.hero-sub {
+  font-size:16px; color:rgba(255,255,255,0.65);
+  line-height:1.8; margin-bottom:28px;
+  animation:fadeUp .6s ease forwards .4s; opacity:0; max-width:480px;
+}
+.hero-btns {
+  display:flex; gap:12px; flex-wrap:wrap;
+  animation:fadeUp .6s ease forwards .6s; opacity:0;
+}
+.hero-stats {
+  display:flex; gap:32px; margin-top:40px;
+  animation:fadeUp .6s ease forwards .8s; opacity:0;
+}
+.hstat { text-align:left; }
+.hstat-num { font-size:28px; font-weight:800; color:var(--green); display:block; }
+.hstat-lbl { font-size:12px; color:rgba(255,255,255,0.5); }
+
+/* Hero right — Search card */
+.hero-card {
+  background:var(--white); border-radius:var(--radius-lg);
+  padding:28px; box-shadow:var(--shadow-lg);
+  animation:fadeIn .8s ease forwards .4s; opacity:0;
+}
+.hero-card h3 { font-size:16px; font-weight:700; color:var(--dark); margin-bottom:18px; }
+.search-box {
+  display:flex; gap:8px; margin-bottom:16px;
+}
+.search-input {
+  flex:1; padding:12px 16px; border:1.5px solid var(--gray2);
+  border-radius:10px; font-family:var(--font); font-size:14px;
+  outline:none; transition:border-color .2s; color:var(--text);
+}
+.search-input:focus { border-color:var(--green); }
+.search-btn { background:var(--green); color:var(--white); border:none; padding:12px 20px; border-radius:10px; cursor:pointer; font-size:18px; transition:background .2s; }
+.search-btn:hover { background:var(--green2); }
+.demo-results { display:flex; flex-direction:column; gap:8px; }
+.result-card {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 14px; background:var(--gray); border-radius:10px;
+  border:1px solid var(--gray2);
+}
+.result-left { display:flex; align-items:center; gap:10px; }
+.result-icon { width:36px; height:36px; background:var(--green3); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.result-name { font-size:13px; font-weight:600; color:var(--dark); }
+.result-addr { font-size:11px; color:var(--muted); }
+.avail-badge { padding:4px 10px; border-radius:6px; font-size:11px; font-weight:600; }
+.avail-yes { background:#DCFCE7; color:#16A34A; }
+.avail-no { background:#FEE2E2; color:#DC2626; }
+.delivery-note {
+  display:flex; align-items:center; gap:8px; margin-top:12px;
+  background:var(--green3); border-radius:10px; padding:10px 14px;
+}
+.delivery-note span { font-size:12px; color:var(--green2); font-weight:500; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+/* ── HOW IT WORKS ── */
+#how { padding:80px 5%; background:var(--gray); }
+.section-tag { font-size:11px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--green); margin-bottom:8px; }
+.section-title { font-size:clamp(1.8rem,3vw,2.8rem); font-weight:800; color:var(--dark); margin-bottom:8px; line-height:1.2; }
+.section-sub { font-size:15px; color:var(--muted); max-width:500px; line-height:1.8; margin-bottom:48px; }
+.steps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+.step-card {
+  background:var(--white); border-radius:var(--radius);
+  padding:28px 24px; position:relative; overflow:hidden;
+  border:1px solid var(--gray2); transition:all .3s;
+}
+.step-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); border-color:var(--green); }
+.step-num {
+  position:absolute; top:16px; right:16px;
+  font-size:48px; font-weight:800; color:rgba(0,166,81,0.06);
+  line-height:1;
+}
+.step-icon { font-size:36px; margin-bottom:16px; display:block; }
+.step-card h3 { font-size:16px; font-weight:700; color:var(--dark); margin-bottom:8px; }
+.step-card p { font-size:13px; color:var(--muted); line-height:1.7; }
+
+/* ── FEATURES ── */
+#features { padding:80px 5%; background:var(--white); }
+.features-grid { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; }
+.features-list { display:flex; flex-direction:column; gap:20px; }
+.feat-item { display:flex; gap:16px; align-items:flex-start; }
+.feat-icon { width:46px; height:46px; border-radius:12px; background:var(--green3); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+.feat-item h4 { font-size:15px; font-weight:700; color:var(--dark); margin-bottom:4px; }
+.feat-item p { font-size:13px; color:var(--muted); line-height:1.6; }
+
+/* Phone mockup */
+.phone-wrap { display:flex; justify-content:center; }
+.phone {
+  width:280px; background:var(--dark); border-radius:36px;
+  padding:16px; box-shadow:var(--shadow-lg);
+  border:8px solid #1a2a1e;
+}
+.phone-screen { background:var(--white); border-radius:24px; overflow:hidden; }
+.phone-header { background:var(--green); padding:16px; }
+.phone-header-top { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.phone-avatar { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:18px; }
+.phone-name { font-size:13px; font-weight:700; color:var(--white); }
+.phone-status { font-size:10px; color:rgba(255,255,255,0.7); }
+.phone-search { background:rgba(255,255,255,0.15); border-radius:8px; padding:8px 12px; font-size:12px; color:rgba(255,255,255,0.8); }
+.phone-body { padding:12px; display:flex; flex-direction:column; gap:8px; }
+.msg { max-width:85%; }
+.msg-in { align-self:flex-start; }
+.msg-out { align-self:flex-end; }
+.msg-bubble {
+  padding:10px 14px; border-radius:12px; font-size:12px; line-height:1.5;
+}
+.msg-in .msg-bubble { background:var(--gray); color:var(--dark); border-bottom-left-radius:4px; }
+.msg-out .msg-bubble { background:var(--green); color:var(--white); border-bottom-right-radius:4px; }
+.msg-time { font-size:9px; color:var(--muted); margin-top:3px; padding:0 4px; }
+.msg-out .msg-time { text-align:right; }
+
+/* ── PHARMACY PANEL ── */
+#pharmacy { padding:80px 5%; background:var(--dark); }
+.pharmacy-grid { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+.pharmacy-text .section-title { color:var(--white); }
+.pharmacy-text .section-sub { color:rgba(255,255,255,0.6); }
+.pharma-features { display:flex; flex-direction:column; gap:14px; margin-top:32px; }
+.pharma-feat { display:flex; align-items:center; gap:14px; padding:14px 18px; background:rgba(255,255,255,0.05); border-radius:12px; border:1px solid rgba(255,255,255,0.08); }
+.pharma-feat-icon { width:40px; height:40px; border-radius:10px; background:rgba(0,166,81,0.2); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.pharma-feat-text h4 { font-size:13px; font-weight:600; color:var(--white); margin-bottom:2px; }
+.pharma-feat-text p { font-size:12px; color:rgba(255,255,255,0.5); }
+
+/* Dashboard mockup */
+.dashboard {
+  background:#111D15; border-radius:16px; padding:20px;
+  border:1px solid rgba(255,255,255,0.08);
+}
+.dash-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+.dash-title { font-size:14px; font-weight:700; color:var(--white); }
+.dash-badge { background:rgba(0,166,81,0.2); color:#4ADE80; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:600; }
+.dash-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+.dash-stat { background:rgba(255,255,255,0.04); border-radius:10px; padding:14px 12px; text-align:center; border:1px solid rgba(255,255,255,0.06); }
+.dash-stat-n { font-size:20px; font-weight:800; color:var(--green); display:block; }
+.dash-stat-l { font-size:10px; color:rgba(255,255,255,0.4); margin-top:2px; }
+.inventory-list { display:flex; flex-direction:column; gap:6px; }
+.inv-item { display:flex; align-items:center; justify-content:space-between; padding:10px 12px; background:rgba(255,255,255,0.03); border-radius:8px; border:1px solid rgba(255,255,255,0.05); }
+.inv-name { font-size:12px; color:rgba(255,255,255,0.8); font-weight:500; }
+.inv-status { font-size:10px; font-weight:600; padding:3px 8px; border-radius:5px; }
+.inv-yes { background:rgba(0,166,81,0.2); color:#4ADE80; }
+.inv-no { background:rgba(229,57,53,0.2); color:#F87171; }
+.inv-toggle { width:28px; height:16px; background:var(--green); border-radius:8px; cursor:pointer; position:relative; flex-shrink:0; transition:background .2s; }
+.inv-toggle::after { content:''; position:absolute; width:12px; height:12px; background:var(--white); border-radius:50%; right:2px; top:2px; transition:transform .2s; }
+.inv-toggle.off { background:#374151; }
+.inv-toggle.off::after { transform:translateX(-12px); }
+
+/* ── PRICING ── */
+#pricing { padding:80px 5%; background:var(--gray); }
+.pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; max-width:900px; margin:0 auto; }
+.price-card {
+  background:var(--white); border-radius:var(--radius-lg);
+  padding:32px 28px; border:1.5px solid var(--gray2);
+  transition:all .3s; position:relative;
+}
+.price-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); }
+.price-card.featured { border-color:var(--green); background:var(--green); }
+.price-popular { position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--amber); color:var(--white); padding:4px 16px; border-radius:20px; font-size:11px; font-weight:700; white-space:nowrap; }
+.price-name { font-size:13px; font-weight:600; color:var(--muted); margin-bottom:8px; }
+.price-card.featured .price-name { color:rgba(255,255,255,0.7); }
+.price-amount { font-size:36px; font-weight:800; color:var(--dark); margin-bottom:4px; }
+.price-card.featured .price-amount { color:var(--white); }
+.price-period { font-size:12px; color:var(--muted); margin-bottom:24px; }
+.price-card.featured .price-period { color:rgba(255,255,255,0.6); }
+.price-features { list-style:none; display:flex; flex-direction:column; gap:10px; margin-bottom:28px; }
+.price-features li { font-size:13px; color:var(--text); display:flex; align-items:center; gap:8px; }
+.price-card.featured .price-features li { color:rgba(255,255,255,0.9); }
+.price-features li::before { content:'✓'; color:var(--green); font-weight:700; flex-shrink:0; }
+.price-card.featured .price-features li::before { color:rgba(255,255,255,0.8); }
+
+/* ── DELIVERY MODEL ── */
+#delivery { padding:80px 5%; background:var(--white); }
+.delivery-flow { display:flex; align-items:center; justify-content:center; gap:0; flex-wrap:wrap; margin-top:40px; }
+.del-step { text-align:center; padding:24px 20px; flex:1; min-width:140px; }
+.del-icon { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 12px; }
+.del-title { font-size:14px; font-weight:700; color:var(--dark); margin-bottom:6px; }
+.del-desc { font-size:12px; color:var(--muted); line-height:1.6; }
+.del-arrow { font-size:24px; color:var(--green); flex-shrink:0; padding:0 8px; margin-top:-40px; }
+.money-split { display:flex; gap:24px; justify-content:center; margin-top:48px; flex-wrap:wrap; }
+.money-card { background:var(--gray); border-radius:var(--radius); padding:24px 28px; text-align:center; min-width:160px; border:1.5px solid var(--gray2); }
+.money-pct { font-size:40px; font-weight:800; color:var(--green); display:block; }
+.money-lbl { font-size:13px; color:var(--muted); margin-top:4px; }
+.money-amt { font-size:18px; font-weight:700; color:var(--dark); margin-top:6px; }
+
+/* ── WHATSAPP SECTION ── */
+#whatsapp { padding:80px 5%; background:#075E54; }
+.wa-inner { display:flex; align-items:center; gap:60px; }
+.wa-text { flex:1; }
+.wa-text .section-title { color:var(--white); }
+.wa-text .section-sub { color:rgba(255,255,255,0.7); }
+.wa-steps { display:flex; flex-direction:column; gap:14px; margin-top:28px; }
+.wa-step { display:flex; align-items:center; gap:14px; color:rgba(255,255,255,0.85); font-size:14px; }
+.wa-step-num { width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:var(--white); flex-shrink:0; }
+.wa-phone { flex-shrink:0; }
+.wa-device { width:260px; background:#ECE5DD; border-radius:28px; overflow:hidden; box-shadow:var(--shadow-lg); }
+.wa-topbar { background:#075E54; padding:12px 16px; display:flex; align-items:center; gap:10px; }
+.wa-av { width:34px; height:34px; border-radius:50%; background:#25D366; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.wa-name { font-size:13px; font-weight:600; color:var(--white); }
+.wa-sub { font-size:10px; color:rgba(255,255,255,0.7); }
+.wa-msgs { padding:12px; display:flex; flex-direction:column; gap:8px; }
+.wa-msg { max-width:80%; }
+.wa-in { align-self:flex-start; }
+.wa-out { align-self:flex-end; }
+.wa-bubble { padding:8px 12px; border-radius:8px; font-size:11px; line-height:1.5; }
+.wa-in .wa-bubble { background:var(--white); color:var(--dark); border-top-left-radius:2px; }
+.wa-out .wa-bubble { background:#DCF8C6; color:var(--dark); border-top-right-radius:2px; }
+.wa-time { font-size:9px; color:#888; margin-top:2px; padding:0 4px; text-align:right; }
+
+/* ── CTA ── */
+#cta { padding:80px 5%; background:var(--green); text-align:center; }
+#cta h2 { font-size:clamp(1.8rem,3vw,3rem); font-weight:800; color:var(--white); margin-bottom:12px; }
+#cta p { font-size:16px; color:rgba(255,255,255,0.8); margin-bottom:32px; }
+.cta-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+
+/* ── FOOTER ── */
+footer { background:var(--dark); padding:40px 5%; }
+.footer-inner { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
+.footer-logo { display:flex; align-items:center; gap:10px; }
+.footer-logo-icon { width:32px; height:32px; background:var(--green); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.footer-logo-text { font-size:15px; font-weight:700; color:var(--white); }
+.footer-logo-text span { color:var(--green); }
+.footer-links { display:flex; gap:20px; }
+.footer-links a { font-size:12px; color:rgba(255,255,255,0.5); text-decoration:none; transition:color .2s; }
+.footer-links a:hover { color:var(--green); }
+.footer-copy { font-size:12px; color:rgba(255,255,255,0.3); }
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  nav { padding:0 4%; }
+  .nav-links, .nav-cta .btn-outline { display:none; }
+  #hero { grid-template-columns:1fr; padding:90px 4% 50px; gap:40px; }
+  .hero-stats { gap:20px; }
+  .steps-grid, .features-grid, .pharmacy-grid, .pricing-grid { grid-template-columns:1fr; }
+  .delivery-flow { flex-direction:column; }
+  .del-arrow { transform:rotate(90deg); margin:0; }
+  .wa-inner { flex-direction:column; }
+  .footer-inner { flex-direction:column; text-align:center; }
+}
+
+/* ── BLUEPRINT SECTION ── */
+#blueprint { padding:80px 5%; background:#F0FFF4; border-top:3px solid var(--green); }
+.bp-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; margin-top:40px; }
+.bp-card { background:var(--white); border-radius:var(--radius); padding:24px; border:1.5px solid var(--gray2); }
+.bp-card h3 { font-size:14px; font-weight:700; color:var(--dark); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+.bp-card ul { list-style:none; display:flex; flex-direction:column; gap:8px; }
+.bp-card ul li { font-size:12px; color:var(--muted); padding-left:16px; position:relative; line-height:1.6; }
+.bp-card ul li::before { content:'→'; position:absolute; left:0; color:var(--green); font-size:10px; }
+.phase-timeline { display:flex; flex-direction:column; gap:16px; margin-top:24px; }
+.pt-item { display:flex; gap:16px; }
+.pt-line { display:flex; flex-direction:column; align-items:center; }
+.pt-dot { width:12px; height:12px; border-radius:50%; background:var(--green); flex-shrink:0; }
+.pt-dash { width:2px; flex:1; background:var(--gray2); margin:4px 0; }
+.pt-content { flex:1; padding-bottom:16px; }
+.pt-phase { font-size:11px; font-weight:700; color:var(--green); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:4px; }
+.pt-title { font-size:14px; font-weight:700; color:var(--dark); margin-bottom:6px; }
+.pt-items { font-size:12px; color:var(--muted); line-height:1.7; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">💊</div>
+    <span class="nav-logo-text">Med<span>Find</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how">How it Works</a></li>
+    <li><a href="#pharmacy">For Pharmacies</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#whatsapp">WhatsApp</a></li>
+    <li><a href="#blueprint">Blueprint</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="#pharmacy" class="btn btn-outline">Register Pharmacy</a>
+    <a href="#whatsapp" class="btn btn-primary">Order Now</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-circles">
+    <div class="hbc hbc1"></div>
+    <div class="hbc hbc2"></div>
+  </div>
+  <div class="hero-text">
+    <div class="hero-badge">🌟 Arifwala ka Pehla Medicine Platform</div>
+    <h1 class="hero-title">Emergency mein<br><span>Medicine milegi</span><br>Ghar tak!</h1>
+    <p class="hero-sub">Arifwala aur surrounding villages ke liye — kaunsi pharmacy pe kaunsi medicine hai, instantly jaano. Ghar baithe order karo. Rs.100 mein delivery.</p>
+    <div class="hero-btns">
+      <a href="#whatsapp" class="btn btn-primary btn-lg whatsapp-btn">
+        💬 WhatsApp se Order
+      </a>
+      <a href="#how" class="btn btn-outline btn-lg" style="border-color:rgba(255,255,255,0.3);color:rgba(255,255,255,0.8)">Kaise Kaam Karta Hai</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat">
+        <span class="hstat-num">20+</span>
+        <span class="hstat-lbl">Pharmacies</span>
+      </div>
+      <div class="hstat">
+        <span class="hstat-num">500+</span>
+        <span class="hstat-lbl">Medicines</span>
+      </div>
+      <div class="hstat">
+        <span class="hstat-num">₨100</span>
+        <span class="hstat-lbl">Delivery Charge</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-card">
+    <h3>🔍 Medicine Search Karo</h3>
+    <div class="search-box">
+      <input class="search-input" type="text" placeholder="Medicine ka naam likho... e.g. Panadol" id="searchInput">
+      <button class="search-btn" onclick="doSearch()">🔍</button>
+    </div>
+    <div class="demo-results" id="results">
+      <div class="result-card">
+        <div class="result-left">
+          <div class="result-icon">🏪</div>
+          <div>
+            <div class="result-name">Al-Shifa Pharmacy</div>
+            <div class="result-addr">📍 Main Bazaar, Arifwala</div>
+          </div>
+        </div>
+        <span class="avail-badge avail-yes">✓ Available</span>
+      </div>
+      <div class="result-card">
+        <div class="result-left">
+          <div class="result-icon">🏪</div>
+          <div>
+            <div class="result-name">Madina Medical Store</div>
+            <div class="result-addr">📍 Chowk Road, Arifwala</div>
+          </div>
+        </div>
+        <span class="avail-badge avail-yes">✓ Available</span>
+      </div>
+      <div class="result-card">
+        <div class="result-left">
+          <div class="result-icon">🏪</div>
+          <div>
+            <div class="result-name">City Pharmacy</div>
+            <div class="result-addr">📍 Hospital Road, Arifwala</div>
+          </div>
+        </div>
+        <span class="avail-badge avail-no">✗ Out of Stock</span>
+      </div>
+    </div>
+    <div class="delivery-note">
+      <span>🛵 Delivery Rs.100 | Rs.70 driver ko | Rs.30 platform</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-tag">Simple Process</div>
+  <h2 class="section-title">Sirf 3 Steps mein<br>Medicine ghar tak</h2>
+  <p class="section-sub">Website ya WhatsApp — dono se kaam karta hai. Technology nahi jaante? Koi baat nahi.</p>
+  <div class="steps-grid">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <span class="step-icon">🔍</span>
+      <h3>Medicine Dhundho</h3>
+      <p>Website pe search karo ya WhatsApp pe medicine ka naam likho. Hamare system mein Arifwala ki saari pharmacies ka real-time data hai.</p>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <span class="step-icon">📦</span>
+      <h3>Order Karo</h3>
+      <p>Jo pharmacy available dikhaye, wahan se order karo. Address do, Rs.100 delivery charge lagega. Bas.</p>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <span class="step-icon">🛵</span>
+      <h3>Ghar pe Aayegi</h3>
+      <p>Hamare delivery boy medicine aapke ghar tak pahunchayenge. Village areas mein bhi. Emergency? Priority delivery.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div style="text-align:center;margin-bottom:48px">
+    <div class="section-tag">Platform Features</div>
+    <h2 class="section-title">Sab kuch ek jagah</h2>
+  </div>
+  <div class="features-grid">
+    <div class="features-list">
+      <div class="feat-item">
+        <div class="feat-icon">🔍</div>
+        <div>
+          <h4>Real-time Medicine Search</h4>
+          <p>Kisi bhi medicine ka naam likho — instantly pata chalega Arifwala ki konsi pharmacy pe available hai.</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">📋</div>
+        <div>
+          <h4>Pharmacy Inventory Management</h4>
+          <p>Har pharmacy apni inventory update karti rehti hai — in stock, out of stock. Fresh data hamesha.</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">🪪</div>
+        <div>
+          <h4>License Verification</h4>
+          <p>Sirf licensed pharmacies platform pe hain. License number, expiry date — sab verify kiya hua.</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">💬</div>
+        <div>
+          <h4>WhatsApp Bot</h4>
+          <p>Website nahi chalani? WhatsApp pe medicine naam likho — bot reply karega kahan milegi.</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">🛵</div>
+        <div>
+          <h4>Home Delivery Network</h4>
+          <p>Arifwala + surrounding village areas. Rs.100 flat delivery charge. Emergency ke liye priority available.</p>
+        </div>
+      </div>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-header">
+            <div class="phone-header-top">
+              <div class="phone-avatar">💊</div>
+              <div>
+                <div class="phone-name">MedFind Arifwala</div>
+                <div class="phone-status">● Online • 20+ Pharmacies</div>
+              </div>
+            </div>
+            <div class="phone-search">🔍  Medicine search karo...</div>
+          </div>
+          <div class="phone-body">
+            <div class="result-card" style="margin:0;font-size:11px">
+              <div class="result-left">
+                <div style="font-size:14px">🏪</div>
+                <div>
+                  <div style="font-size:11px;font-weight:600;color:#0D1B12">Al-Shifa Pharmacy</div>
+                  <div style="font-size:10px;color:#6B7E70">Main Bazaar · 0.3km</div>
+                </div>
+              </div>
+              <span class="avail-badge avail-yes" style="font-size:10px">✓ Available</span>
+            </div>
+            <div class="result-card" style="margin:0;font-size:11px">
+              <div class="result-left">
+                <div style="font-size:14px">🏪</div>
+                <div>
+                  <div style="font-size:11px;font-weight:600;color:#0D1B12">Madina Medical</div>
+                  <div style="font-size:10px;color:#6B7E70">Chowk Road · 0.5km</div>
+                </div>
+              </div>
+              <span class="avail-badge avail-yes" style="font-size:10px">✓ Available</span>
+            </div>
+            <div style="background:#E8F7EE;border-radius:8px;padding:10px;font-size:11px;color:#007A3D;font-weight:500">
+              🛵 Delivery Rs.100 — Order Now
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHARMACY PANEL -->
+<section id="pharmacy">
+  <div class="pharmacy-grid">
+    <div class="pharmacy-text">
+      <div class="section-tag" style="color:#4ADE80">For Pharmacy Owners</div>
+      <h2 class="section-title">Apni Pharmacy<br>Register Karo</h2>
+      <p class="section-sub">Pehla 1 mahina bilkul FREE. Apni inventory manage karo, zyada customers pao, license bhi track karo.</p>
+      <div class="pharma-features">
+        <div class="pharma-feat">
+          <div class="pharma-feat-icon">📦</div>
+          <div class="pharma-feat-text">
+            <h4>Inventory Control</h4>
+            <p>Phone se medicine in/out stock update karo — 30 seconds mein</p>
+          </div>
+        </div>
+        <div class="pharma-feat">
+          <div class="pharma-feat-icon">🪪</div>
+          <div class="pharma-feat-text">
+            <h4>License Management</h4>
+            <p>License upload karo — expiry se 30 din pehle alert aayega</p>
+          </div>
+        </div>
+        <div class="pharma-feat">
+          <div class="pharma-feat-icon">📊</div>
+          <div class="pharma-feat-text">
+            <h4>Analytics Dashboard</h4>
+            <p>Kitne log ne aapki shop dekhi — weekly report milegi</p>
+          </div>
+        </div>
+        <div class="pharma-feat">
+          <div class="pharma-feat-icon">👥</div>
+          <div class="pharma-feat-text">
+            <h4>More Customers</h4>
+            <p>Jo log search karenge — aapki shop top mein dikhegi</p>
+          </div>
+        </div>
+      </div>
+      <a href="#" class="btn btn-primary btn-lg" style="margin-top:28px;display:inline-block">Register Karo — 1 Mahina FREE</a>
+    </div>
+    <div class="dashboard">
+      <div class="dash-header">
+        <div class="dash-title">Al-Shifa Pharmacy Dashboard</div>
+        <div class="dash-badge">● Live</div>
+      </div>
+      <div class="dash-stats">
+        <div class="dash-stat"><span class="dash-stat-n">147</span><span class="dash-stat-l">Views Today</span></div>
+        <div class="dash-stat"><span class="dash-stat-n">23</span><span class="dash-stat-l">Orders</span></div>
+        <div class="dash-stat"><span class="dash-stat-n">312</span><span class="dash-stat-l">Days License</span></div>
+      </div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em">Inventory Update Karo</div>
+      <div class="inventory-list">
+        <div class="inv-item">
+          <div class="inv-name">Panadol 500mg</div>
+          <span class="inv-status inv-yes">In Stock</span>
+          <div class="inv-toggle"></div>
+        </div>
+        <div class="inv-item">
+          <div class="inv-name">Augmentin 625mg</div>
+          <span class="inv-status inv-yes">In Stock</span>
+          <div class="inv-toggle"></div>
+        </div>
+        <div class="inv-item">
+          <div class="inv-name">Insulin Glargine</div>
+          <span class="inv-status inv-no">Out of Stock</span>
+          <div class="inv-toggle off"></div>
+        </div>
+        <div class="inv-item">
+          <div class="inv-name">Brufen 400mg</div>
+          <span class="inv-status inv-yes">In Stock</span>
+          <div class="inv-toggle"></div>
+        </div>
+        <div class="inv-item">
+          <div class="inv-name">Calpol Syrup</div>
+          <span class="inv-status inv-no">Out of Stock</span>
+          <div class="inv-toggle off"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DELIVERY MODEL -->
+<section id="delivery">
+  <div style="text-align:center">
+    <div class="section-tag">Delivery Model</div>
+    <h2 class="section-title">Rs.100 mein<br>Ghar tak Delivery</h2>
+    <p class="section-sub" style="margin:0 auto">Transparent aur fair — customer, delivery boy, aur platform — teeno ka faida.</p>
+  </div>
+  <div class="delivery-flow">
+    <div class="del-step">
+      <div class="del-icon" style="background:#E8F7EE">👤</div>
+      <div class="del-title">Customer</div>
+      <div class="del-desc">Rs.100<br>delivery charge<br>deta hai</div>
+    </div>
+    <div class="del-arrow">→</div>
+    <div class="del-step">
+      <div class="del-icon" style="background:#EFF6FF">💻</div>
+      <div class="del-title">MedFind Platform</div>
+      <div class="del-desc">Order receive<br>karta hai aur<br>manage karta hai</div>
+    </div>
+    <div class="del-arrow">→</div>
+    <div class="del-step">
+      <div class="del-icon" style="background:#FEF3C7">🛵</div>
+      <div class="del-title">Delivery Boy</div>
+      <div class="del-desc">Medicine pick<br>kar ke ghar<br>pohunchata hai</div>
+    </div>
+    <div class="del-arrow">→</div>
+    <div class="del-step">
+      <div class="del-icon" style="background:#FCE7F3">🏠</div>
+      <div class="del-title">Patient</div>
+      <div class="del-desc">Ghar baithe<br>medicine<br>milti hai</div>
+    </div>
+  </div>
+  <div class="money-split">
+    <div class="money-card">
+      <span class="money-pct">70%</span>
+      <div class="money-lbl">Delivery Boy Ko</div>
+      <div class="money-amt">Rs. 70</div>
+    </div>
+    <div class="money-card" style="border-color:var(--green);background:var(--green3)">
+      <span class="money-pct" style="color:var(--green2)">30%</span>
+      <div class="money-lbl">Platform Ko (Aapko)</div>
+      <div class="money-amt">Rs. 30</div>
+    </div>
+    <div class="money-card">
+      <span class="money-pct" style="color:#1877F2">FREE</span>
+      <div class="money-lbl">Pharmacy ke liye</div>
+      <div class="money-amt">1st Month Free</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHATSAPP -->
+<section id="whatsapp">
+  <div class="wa-inner">
+    <div class="wa-text">
+      <div class="section-tag" style="color:#25D366">WhatsApp Bot</div>
+      <h2 class="section-title">Website nahi jaante?<br>WhatsApp pe karo!</h2>
+      <p class="section-sub">Sirf medicine ka naam likho — hamar bot aapko bata dega kahan milegi. Bilkul simple.</p>
+      <div class="wa-steps">
+        <div class="wa-step"><div class="wa-step-num">1</div> Hamare number pe WhatsApp karo</div>
+        <div class="wa-step"><div class="wa-step-num">2</div> Medicine ka naam likho — jaise "Panadol"</div>
+        <div class="wa-step"><div class="wa-step-num">3</div> Bot reply karega — kahan milegi, kitni door</div>
+        <div class="wa-step"><div class="wa-step-num">4</div> "Order" likho — delivery arrange ho jaayegi</div>
+      </div>
+      <a href="https://wa.me/923266893326" class="btn btn-lg whatsapp-btn" style="margin-top:28px;display:inline-flex">
+        💬 Abhi WhatsApp Karo
+      </a>
+    </div>
+    <div class="wa-phone">
+      <div class="wa-device">
+        <div class="wa-topbar">
+          <div class="wa-av">💊</div>
+          <div>
+            <div class="wa-name">MedFind Arifwala</div>
+            <div class="wa-sub">Medicine Delivery Bot</div>
+          </div>
+        </div>
+        <div class="wa-msgs">
+          <div class="wa-msg wa-out">
+            <div class="wa-bubble">Panadol chahiye</div>
+            <div class="wa-time">2:34 AM ✓✓</div>
+          </div>
+          <div class="wa-msg wa-in">
+            <div class="wa-bubble">✅ <b>Panadol 500mg</b> in stock hai:<br><br>1. Al-Shifa Pharmacy — Main Bazaar (0.3km)<br>2. Madina Medical — Chowk Rd (0.5km)<br><br>Order karne ke liye "Order 1" ya "Order 2" likho</div>
+            <div class="wa-time">2:34 AM</div>
+          </div>
+          <div class="wa-msg wa-out">
+            <div class="wa-bubble">Order 1</div>
+            <div class="wa-time">2:35 AM ✓✓</div>
+          </div>
+          <div class="wa-msg wa-in">
+            <div class="wa-bubble">📦 Order confirmed! Rs.100 delivery. Apna address bhejo 👇</div>
+            <div class="wa-time">2:35 AM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div style="text-align:center">
+    <div class="section-tag">Pharmacy Pricing</div>
+    <h2 class="section-title">Simple Pricing</h2>
+    <p class="section-sub" style="margin:0 auto 48px">Pehla mahina bilkul free. Kaam chale to aage continue karo.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-name">Basic</div>
+      <div class="price-amount">Free</div>
+      <div class="price-period">Pehla 1 mahina</div>
+      <ul class="price-features">
+        <li>Platform pe listing</li>
+        <li>Inventory management</li>
+        <li>WhatsApp search mein dikhna</li>
+        <li>Basic analytics</li>
+        <li>License upload</li>
+      </ul>
+      <a href="#" class="btn btn-outline" style="width:100%;text-align:center">Start Free</a>
+    </div>
+    <div class="price-card featured">
+      <div class="price-popular">Most Popular</div>
+      <div class="price-name">Standard</div>
+      <div class="price-amount">Rs.500</div>
+      <div class="price-period">per month</div>
+      <ul class="price-features">
+        <li>Sab Basic features</li>
+        <li>Top search ranking</li>
+        <li>License expiry alerts</li>
+        <li>Weekly analytics report</li>
+        <li>Priority customer listing</li>
+      </ul>
+      <a href="#" class="btn btn-white" style="width:100%;text-align:center">Get Started</a>
+    </div>
+    <div class="price-card">
+      <div class="price-name">Premium</div>
+      <div class="price-amount">Rs.1000</div>
+      <div class="price-period">per month</div>
+      <ul class="price-features">
+        <li>Sab Standard features</li>
+        <li>#1 search position</li>
+        <li>Dedicated support</li>
+        <li>Multi-branch management</li>
+        <li>Government compliance tools</li>
+      </ul>
+      <a href="#" class="btn btn-outline" style="width:100%;text-align:center">Contact Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- BLUEPRINT -->
+<section id="blueprint">
+  <div class="section-tag">Project Blueprint</div>
+  <h2 class="section-title">MedFind Arifwala —<br>Complete Roadmap</h2>
+  <p class="section-sub">90 din mein MVP launch. Solo builder. Zero external funding needed.</p>
+
+  <div class="phase-timeline">
+    <div class="pt-item">
+      <div class="pt-line"><div class="pt-dot"></div><div class="pt-dash"></div></div>
+      <div class="pt-content">
+        <div class="pt-phase">Phase 1 — Days 1-30</div>
+        <div class="pt-title">Research + Wireframes</div>
+        <div class="pt-items">Arifwala ki pharmacies count karo · 5 pharmacy owners se baat karo · Figma wireframes banao · Medicine categories list banao · Domain buy karo</div>
+      </div>
+    </div>
+    <div class="pt-item">
+      <div class="pt-line"><div class="pt-dot"></div><div class="pt-dash"></div></div>
+      <div class="pt-content">
+        <div class="pt-phase">Phase 2 — Days 31-60</div>
+        <div class="pt-title">MVP Build</div>
+        <div class="pt-items">Website + search functionality · Firebase database connect · Admin panel for pharmacies · 3-5 pharmacies manually onboard · WhatsApp bot basic version</div>
+      </div>
+    </div>
+    <div class="pt-item">
+      <div class="pt-line"><div class="pt-dot"></div></div>
+      <div class="pt-content">
+        <div class="pt-phase">Phase 3 — Days 61-90</div>
+        <div class="pt-title">Launch + Grow</div>
+        <div class="pt-items">10+ pharmacies onboard · Delivery network setup · Free month launch · WhatsApp groups mein promote · Feedback lo, improve karo · Phase 2 monetization start</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bp-grid">
+    <div class="bp-card">
+      <h3>💻 Tech Stack (Free/Cheap)</h3>
+      <ul>
+        <li>Frontend: HTML + CSS + JavaScript (aap jaante ho)</li>
+        <li>Database: Firebase Firestore (free tier)</li>
+        <li>Hosting: Vercel ya GitHub Pages (free)</li>
+        <li>WhatsApp Bot: Twilio API (free trial)</li>
+        <li>Admin Panel: Simple HTML form + Firebase</li>
+        <li>Domain: ~Rs.1500/year (medfind-arifwala.com)</li>
+      </ul>
+    </div>
+    <div class="bp-card">
+      <h3>💰 Revenue Model</h3>
+      <ul>
+        <li>Delivery charge: Rs.30 per order (Rs.70 driver ko)</li>
+        <li>Pharmacy listing: Rs.500-1000/month (Month 2 se)</li>
+        <li>Premium placement: Rs.1000/month</li>
+        <li>Target: 50 orders/day = Rs.1500/day = Rs.45,000/month</li>
+        <li>10 pharmacies subscribed = Rs.5000-10,000/month extra</li>
+        <li>Break-even: Month 2-3</li>
+      </ul>
+    </div>
+    <div class="bp-card">
+      <h3>🎯 Target Users</h3>
+      <ul>
+        <li>Village areas from Arifwala — 20km radius</li>
+        <li>Elderly patients who can't travel easily</li>
+        <li>Emergency night-time medicine needs</li>
+        <li>Caregivers managing medicine for family</li>
+        <li>Pharmacies wanting more customers</li>
+        <li>District Health Authority (license tracking)</li>
+      </ul>
+    </div>
+    <div class="bp-card">
+      <h3>📱 Marketing Plan</h3>
+      <ul>
+        <li>Month 1: Free — word of mouth in Arifwala</li>
+        <li>WhatsApp groups: Share in all local groups</li>
+        <li>Pharmacy windows: Sticker lagao "Find us on MedFind"</li>
+        <li>Facebook: Arifwala local groups mein post</li>
+        <li>Village imams/community leaders — spread word</li>
+        <li>First 100 orders: Delivery free (acquire users)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <h2>Arifwala ki Pehli Medicine<br>Delivery Service</h2>
+  <p>Pharmacy register karo — pehla mahina FREE. Ya abhi order karo — Rs.100 delivery.</p>
+  <div class="cta-btns">
+    <a href="#pharmacy" class="btn btn-white btn-lg">Register My Pharmacy</a>
+    <a href="https://wa.me/923266893326" class="btn btn-lg whatsapp-btn" style="background:rgba(255,255,255,0.2);color:var(--white);border:1.5px solid rgba(255,255,255,0.4)">💬 WhatsApp se Order</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <div class="footer-logo-icon">💊</div>
+      <span class="footer-logo-text">Med<span>Find</span> Arifwala</span>
+    </div>
+    <div class="footer-links">
+      <a href="#how">How it Works</a>
+      <a href="#pharmacy">For Pharmacies</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#whatsapp">WhatsApp</a>
+      <a href="#blueprint">Blueprint</a>
+    </div>
+    <div class="footer-copy">© 2026 MedFind Arifwala. Built by M. Ahtisham Aslam.</div>
+  </div>
+</footer>
+
+<script>
+// Simple demo search
+const medicines = {
+  'panadol':['Al-Shifa Pharmacy — Main Bazaar','Madina Medical — Chowk Road'],
+  'brufen':['Al-Shifa Pharmacy — Main Bazaar','City Pharmacy — Hospital Road'],
+  'augmentin':['Madina Medical — Chowk Road'],
+  'insulin':['City Pharmacy — Hospital Road'],
+  'calpol':['Al-Shifa Pharmacy — Main Bazaar','Madina Medical — Chowk Road'],
+};
+
+function doSearch() {
+  const val = document.getElementById('searchInput').value.toLowerCase().trim();
+  const res = document.getElementById('results');
+  if (!val) return;
+  const found = medicines[val] || (val.length > 2 ? ['Al-Shifa Pharmacy — Main Bazaar'] : null);
+  if (found) {
+    res.innerHTML = found.map(p => `
+      <div class="result-card">
+        <div class="result-left">
+          <div class="result-icon">🏪</div>
+          <div>
+            <div class="result-name">${p.split('—')[0].trim()}</div>
+            <div class="result-addr">📍 ${p.split('—')[1]?.trim() || 'Arifwala'}</div>
+          </div>
+        </div>
+        <span class="avail-badge avail-yes">✓ Available</span>
+      </div>
+    `).join('') + `<div class="delivery-note"><span>🛵 Delivery Rs.100 — Order via WhatsApp</span></div>`;
+  } else {
+    res.innerHTML = `<div class="result-card"><div class="result-left"><div class="result-icon">⚠️</div><div><div class="result-name">Medicine nahi mili</div><div class="result-addr">WhatsApp pe check karo</div></div></div></div>`;
+  }
+}
+document.getElementById('searchInput').addEventListener('keydown', e => { if(e.key==='Enter') doSearch(); });
+
+// Inventory toggles
+document.querySelectorAll('.inv-toggle').forEach(t => {
+  t.addEventListener('click', () => {
+    t.classList.toggle('off');
+    const status = t.previousElementSibling;
+    if (t.classList.contains('off')) {
+      status.textContent = 'Out of Stock';
+      status.className = 'inv-status inv-no';
+    } else {
+      status.textContent = 'In Stock';
+      status.className = 'inv-status inv-yes';
+    }
+  });
+});
+
+// Scroll animations
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.style.opacity='1'; });
+}, { threshold: 0.1 });
+document.querySelectorAll('.step-card, .feat-item, .bp-card, .pt-item').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
